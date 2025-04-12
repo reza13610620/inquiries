@@ -2,59 +2,10 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پروفایل</title>
 </head>
 <body>
-    <h1>پروفایل</h1>
-
-    {% if address %}
-    <p>آدرس فعلی:</p>
-    <ul>
-        <li>استان: {{ address['province'] }}</li>
-        <li>شهر: {{ address['city'] }}</li>
-        <li>آدرس دقیق: {{ address['detailed_address'] }}</li>
-        <li>کد پستی: {{ address['postal_code'] }}</li>
-    </ul>
-    {% endif %}
-
-    <form method="POST">
-        <label for="province">استان:</label>
-        <select id="province" name="province" required>
-            <option value="">استان را انتخاب کنید</option>
-            <!-- استان‌ها از طریق API یا پایگاه داده باید پر شوند -->
-        </select><br><br>
-
-        <label for="city">شهر:</label>
-        <select id="city" name="city" required>
-            <option value="">ابتدا استان را انتخاب کنید</option>
-        </select><br><br>
-
-        <label for="detailed_address">آدرس دقیق:</label>
-        <textarea id="detailed_address" name="detailed_address" required>{{ address['detailed_address'] if address else '' }}</textarea><br><br>
-
-        <label for="postal_code">کد پستی:</label>
-        <input type="text" id="postal_code" name="postal_code" value="{{ address['postal_code'] if address else '' }}" required><br><br>
-
-        <button type="submit">ذخیره آدرس</button>
-    </form>
-
-    <script>
-        document.getElementById('province').addEventListener('change', function() {
-            const province = this.value;
-            fetch(`/api/cities/${province}`)
-                .then(response => response.json())
-                .then(data => {
-                    const citySelect = document.getElementById('city');
-                    citySelect.innerHTML = ''; // پاک کردن انتخاب‌های قبلی
-                    data.cities.forEach(city => {
-                        const option = document.createElement('option');
-                        option.value = city['id'];
-                        option.textContent = city['name'];
-                        citySelect.appendChild(option);
-                    });
-                });
-        });
-    </script>
+    <h2>خوش آمدید، {{ user.phone }}</h2>
+    <a href="{{ url_for('logout') }}">خروج</a>
 </body>
 </html>

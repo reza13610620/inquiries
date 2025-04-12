@@ -2,20 +2,20 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورود</title>
 </head>
 <body>
-    <h1>ورود</h1>
-    <form method="POST">
-        <label for="phone_number">شماره موبایل:</label>
-        <input type="text" id="phone_number" name="phone_number" required><br><br>
-
-        <label for="password">رمز عبور:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
+    <h2>ورود</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p style="color:red;">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+    <form method="post">
+        <input type="text" name="phone" placeholder="شماره موبایل"><br>
+        <input type="password" name="password" placeholder="رمز عبور"><br>
         <button type="submit">ورود</button>
     </form>
-    <p><a href="{{ url_for('register') }}">ثبت نام</a></p>
+    <a href="{{ url_for('register') }}">ثبت‌نام</a>
 </body>
 </html>
