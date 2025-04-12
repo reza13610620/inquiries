@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نمایش درخواست‌ها</title>
+</head>
+<body>
+    <h1>نمایش درخواست‌ها</h1>
+    <form method="GET">
+        <label for="product">فیلتر بر اساس محصول:</label>
+        <input type="text" id="product" name="product"><br><br>
+
+        <label for="city">فیلتر بر اساس شهر:</label>
+        <input type="text" id="city" name="city"><br><br>
+
+        <button type="submit">فیلتر کردن</button>
+    </form>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>محصول</th>
+                <th>تعداد</th>
+                <th>شهر</th>
+                <th>تاریخ ثبت</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inquiry in inquiries %}
+            <tr>
+                <td>{{ inquiry['product_name'] }}</td>
+                <td>{{ inquiry['quantity'] }}</td>
+                <td>{{ inquiry['city'] }}</td>
+                <td>{{ inquiry['created_at'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

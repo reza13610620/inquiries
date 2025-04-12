@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود</title>
+</head>
+<body>
+    <h1>ورود</h1>
+    <form method="POST">
+        <label for="phone_number">شماره موبایل:</label>
+        <input type="text" id="phone_number" name="phone_number" required><br><br>
+
+        <label for="password">رمز عبور:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">ورود</button>
+    </form>
+    <p><a href="{{ url_for('register') }}">ثبت نام</a></p>
+</body>
+</html>
