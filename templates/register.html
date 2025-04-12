@@ -6,17 +6,20 @@
 </head>
 <body>
     <h2>ثبت‌نام</h2>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% for category, message in messages %}
-        <p style="color:red;">{{ message }}</p>
-      {% endfor %}
-    {% endwith %}
-    <form method="post">
-        <input type="text" name="phone" placeholder="شماره موبایل"><br>
-        <input type="password" name="password" placeholder="رمز عبور"><br>
-        <input type="password" name="confirm" placeholder="تکرار رمز عبور"><br>
+    <form method="POST">
+        <input type="text" name="phone" placeholder="شماره موبایل" required><br>
+        <input type="password" name="password" placeholder="رمز عبور" required><br>
         <button type="submit">ثبت‌نام</button>
     </form>
-    <a href="{{ url_for('login') }}">ورود</a>
+    <p><a href="{{ url_for('login') }}">قبلاً ثبت‌نام کرده‌اید؟ ورود</a></p>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 </body>
 </html>

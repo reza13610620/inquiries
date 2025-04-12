@@ -1,20 +1,8 @@
-# پایگاه داده و فایل‌های باینری
-*.db
-*.sqlite
-*.pyc
-*.pyo
 __pycache__/
-
-# فایل‌های VS Code و Visual Studio
+*.pyc
+*.db
+.env
 .vscode/
-.vs/
-
-# فایل‌های نصبی
+*.sqlite
 *.whl
-*.egg-info/
-dist/
-build/
-
-# فایل‌های مخفی سیستم‌عامل
-.DS_Store
-Thumbs.db
+templates/.vs/
