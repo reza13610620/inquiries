@@ -1,8 +1,8 @@
-__pycache__/
 *.pyc
-*.db
-.env
+__pycache__/
+instance/
+.inquiries.db
 .vscode/
 *.sqlite
+*.vs/
 *.whl
-templates/.vs/

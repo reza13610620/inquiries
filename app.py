@@ -1,94 +1,107 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
-import os
+from datetime import datetime
+
+
+def get_user_default_city(user_id):
+    conn = sqlite3.connect('inquiries.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT city_id FROM addresses WHERE user_id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else None
+
+
+
+from flask import Flask, render_template, request, redirect
+import sqlite3
 
 app = Flask(__name__)
-app.secret_key = 'my_secret_key'
 
-DB_NAME = 'inquiries.db'
+# 📌 اتصال به پایگاه داده
+def get_db_connection():
+    conn = sqlite3.connect('inquiries.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
-# ایجاد دیتابیس و جدول کاربران
-def init_db():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            phone TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        )
-    ''')
+# 🟢 نمایش فرم ثبت محصول
+@app.route('/register_product', methods=['GET'])
+def register_product_form():
+    return render_template('register_product.html')
+
+# 🟢 پردازش ثبت محصول
+@app.route('/register_product', methods=['POST'])
+def register_product():
+    product_name = request.form['product_name']
+    product_code = request.form['product_code']
+    unit = request.form['unit']
+    category = request.form['category']
+
+    conn = get_db_connection()
+    conn.execute(
+        'INSERT INTO products (name, code, unit, category) VALUES (?, ?, ?, ?)',
+        (product_name, product_code, unit, category)
+    )
     conn.commit()
     conn.close()
 
-# صفحه‌ی خانه
-@app.route('/')
-def index():
-    return render_template('index.html')
+    return redirect('/register_product')
 
-# ثبت‌نام
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        phone = request.form['phone']
-        password = request.form['password']
-
-        if not phone or not password:
-            flash('شماره موبایل و رمز عبور الزامی هستند.')
-            return redirect(url_for('register'))
-
-        conn = sqlite3.connect(DB_NAME)
-        c = conn.cursor()
-        try:
-            c.execute("INSERT INTO users (phone, password) VALUES (?, ?)", (phone, password))
-            conn.commit()
-            flash('ثبت‌نام با موفقیت انجام شد. حالا وارد شوید.')
-            return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
-            flash('این شماره قبلاً ثبت‌نام کرده است.')
-        finally:
-            conn.close()
-
-    return render_template('register.html')
-
-# ورود
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        phone = request.form['phone']
-        password = request.form['password']
-
-        conn = sqlite3.connect(DB_NAME)
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE phone = ? AND password = ?", (phone, password))
-        user = c.fetchone()
-        conn.close()
-
-        if user:
-            session['user_id'] = user[0]
-            session['phone'] = user[1]
-            flash('ورود با موفقیت انجام شد.')
-            return redirect(url_for('profile'))
-        else:
-            flash('شماره یا رمز اشتباه است.')
-
-    return render_template('login.html')
-
-# پروفایل کاربر
-@app.route('/profile')
-def profile():
-    if 'user_id' not in session:
-        flash('ابتدا وارد شوید.')
-        return redirect(url_for('login'))
-    return render_template('profile.html', phone=session['phone'])
-
-# خروج
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('با موفقیت خارج شدید.')
-    return redirect(url_for('index'))
-
+# اجرای اپ
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)
+
+
+
+
+
+
+
+from flask import Flask, render_template, request, redirect, session
+import sqlite3
+from datetime import datetime
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+def get_db_connection():
+    conn = sqlite3.connect('inquiries.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route("/inquiry", methods=["GET"])
+def inquiry_form():
+    conn = get_db_connection()
+    products = conn.execute("SELECT * FROM products").fetchall()
+    cities = conn.execute("SELECT * FROM cities").fetchall()
+    
+    # فرض بر اینه که کاربر لاگین کرده و ID در session هست
+    user_id = session.get("user_id")
+    default_city_id = None
+
+    if user_id:
+        address = conn.execute("SELECT city_id FROM addresses WHERE user_id = ?", (user_id,)).fetchone()
+        if address:
+            default_city_id = address["city_id"]
+    
+    conn.close()
+    return render_template("form_inquiry.html", products=products, cities=cities, default_city_id=default_city_id)
+
+
+@app.route("/submit_inquiry", methods=["POST"])
+def submit_inquiry():
+    product_id = request.form["product_id"]
+    unit = request.form["unit"]
+    quantity = request.form["quantity"]
+    city_id = request.form["city_id"]
+    user_id = session.get("user_id")
+
+    conn = get_db_connection()
+    conn.execute("""
+        INSERT INTO inquiries (product_id, unit, quantity, city_id, user_id, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (product_id, unit, quantity, city_id, user_id, datetime.now()))
+    conn.commit()
+    conn.close()
+
+    return redirect("/inquiry")

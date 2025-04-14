@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>ثبت محصول جدید</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>فرم ثبت محصول</h2>
+        <form action="/register_product" method="POST">
+            <label for="product_name">نام محصول:</label>
+            <input type="text" id="product_name" name="product_name" required>
+
+            <label for="product_code">شناسه محصول:</label>
+            <input type="text" id="product_code" name="product_code" required>
+
+            <label for="unit">واحد شمارش:</label>
+            <input type="text" id="unit" name="unit" required>
+
+            <label for="category">دسته بندی:</label>
+            <input type="text" id="category" name="category" required>
+
+            <button type="submit">ثبت محصول</button>
+        </form>
+    </div>
+</body>
+</html>

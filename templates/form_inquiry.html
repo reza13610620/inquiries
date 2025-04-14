@@ -1,0 +1,37 @@
+<!-- templates/form_inquiry.html -->
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>ثبت استعلام</title>
+</head>
+<body>
+    <h2>فرم ثبت استعلام کالا</h2>
+    <form method="POST" action="/submit_inquiry">
+        <label for="product_id">نام کالا:</label>
+        <select name="product_id" id="product_id" required>
+            {% for product in products %}
+                <option value="{{ product.id }}">{{ product.name }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="unit">واحد شمارش:</label>
+        <input type="text" name="unit" id="unit" required><br><br>
+
+        <label for="quantity">تعداد/مقدار:</label>
+        <input type="number" name="quantity" id="quantity" required><br><br>
+
+        <label for="city_id">شهر شما (پیش‌فرض از پروفایل):</label>
+        <select name="city_id" id="city_id">
+            {% for city in cities %}
+                <option value="{{ city.id }}" {% if city.id == default_city_id %}selected{% endif %}>
+                    {{ city.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <small>(در صورت تغییر، تأیید مجدد انجام می‌شود)</small><br><br>
+
+        <button type="submit">ثبت استعلام</button>
+    </form>
+</body>
+</html>

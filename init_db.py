@@ -1,21 +1,18 @@
+# init_db.py
+
 import sqlite3
 
-# اتصال به پایگاه داده
 conn = sqlite3.connect('inquiries.db')
-cursor = conn.cursor()
+cur = conn.cursor()
 
-# ایجاد جدول درخواست‌ها
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS inquiries (
+cur.execute('''
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_name TEXT NOT NULL,
-    quantity INTEGER NOT NULL,
-    city TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    phone TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
 )
 ''')
 
 conn.commit()
 conn.close()
-
-print("جدول 'inquiries' با موفقیت ایجاد شد.")
+print("Database initialized.")
